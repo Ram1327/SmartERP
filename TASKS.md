@@ -13,6 +13,7 @@
 - [x] Day 1 Documentation & Status verification
 
 ## Day 2 (Combined Original Day 3 + Day 4): Authentication + Company Management
+- [ ] Add AI instruction files (`frontend/AGENTS.md`, `frontend/CLAUDE.md`) to `.gitignore` and untrack them
 - [ ] User Register/Login endpoints with JWT access/refresh token rotation
 - [ ] Protect routes using auth middleware
 - [ ] Implement Company creation, alteration, deletion endpoints
