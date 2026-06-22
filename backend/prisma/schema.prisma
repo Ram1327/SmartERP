@@ -1,0 +1,252 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  companies     Company[]
+}
+
+model Company {
+  id                  String            @id @default(uuid())
+  userId              String
+  user                User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                String
+  address             String
+  gstNumber           String?
+  financialYearStart  DateTime
+  state               String
+  contactInfo         String?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  groups              Group[]
+  ledgers             Ledger[]
+  stockGroups         StockGroup[]
+  units               Unit[]
+  stockItems          StockItem[]
+  vouchers            Voucher[]
+  invoices            Invoice[]
+  customers           Customer[]
+  suppliers           Supplier[]
+  voucherSequences    VoucherSequence[]
+}
+
+model Group {
+  id            String    @id @default(uuid())
+  companyId     String
+  company       Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  name          String
+  parentId      String?
+  parent        Group?    @relation("GroupToGroup", fields: [parentId], references: [id], onDelete: Cascade)
+  subgroups     Group[]   @relation("GroupToGroup")
+  primaryGroup  String    // "Assets", "Liabilities", "Income", "Expenses"
+  createdAt     DateTime  @default(now())
+  ledgers       Ledger[]
+
+  @@unique([companyId, name])
+}
+
+model Ledger {
+  id             String         @id @default(uuid())
+  companyId      String
+  company        Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  groupId        String
+  group          Group          @relation(fields: [groupId], references: [id])
+  name           String
+  type           String         // "Customer", "Supplier", "Expense", "Income", "Bank", "Cash", "General"
+  openingBalance Decimal        @db.Decimal(15, 2) @default(0)
+  currentBalance Decimal        @db.Decimal(15, 2) @default(0)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  entries        VoucherEntry[]
+  customer       Customer?
+  supplier       Supplier?
+
+  @@unique([companyId, name])
+}
+
+model Customer {
+  id                 String   @id @default(uuid())
+  companyId          String
+  company            Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  ledgerId           String   @unique
+  ledger             Ledger   @relation(fields: [ledgerId], references: [id], onDelete: Restrict)
+  name               String
+  mobileNumber       String?
+  address            String?
+  gstin              String?
+  outstandingBalance Decimal  @db.Decimal(15, 2) @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Supplier {
+  id              String   @id @default(uuid())
+  companyId       String
+  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  ledgerId        String   @unique
+  ledger          Ledger   @relation(fields: [ledgerId], references: [id], onDelete: Restrict)
+  name            String
+  mobileNumber    String?
+  address         String?
+  gstin           String?
+  outstandingDues Decimal  @db.Decimal(15, 2) @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model StockGroup {
+  id         String      @id @default(uuid())
+  companyId  String
+  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  name       String
+  createdAt  DateTime    @default(now())
+  items      StockItem[]
+
+  @@unique([companyId, name])
+}
+
+model Unit {
+  id         String      @id @default(uuid())
+  companyId  String
+  company    Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  name       String      // "PCS", "KG", "BOX", "LTR", etc.
+  createdAt  DateTime    @default(now())
+  items      StockItem[]
+
+  @@unique([companyId, name])
+}
+
+model StockItem {
+  id                    String                 @id @default(uuid())
+  companyId             String
+  company               Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  groupId               String?
+  group                 StockGroup?            @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  unitId                String
+  unit                  Unit                   @relation(fields: [unitId], references: [id])
+  name                  String
+  sku                   String?
+  purchasePrice         Decimal                @db.Decimal(15, 2) @default(0)
+  sellingPrice          Decimal                @db.Decimal(15, 2) @default(0)
+  quantity              Decimal                @db.Decimal(15, 2) @default(0)
+  gstPercentage         Decimal                @db.Decimal(5, 2) @default(0)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  inventoryTransactions InventoryTransaction[]
+  invoiceItems          InvoiceItem[]
+
+  @@unique([companyId, name])
+}
+
+model VoucherSequence {
+  id          String   @id @default(uuid())
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  voucherType String   // "Receipt", "Payment", "Contra", "Journal", "Purchase", "Sales", "CreditNote", "DebitNote"
+  prefix      String?  // e.g., "PUR-", "SAL-"
+  nextNumber  Int      @default(1)
+  suffix      String?
+  padding     Int      @default(4)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([companyId, voucherType])
+}
+
+model Voucher {
+  id                    String                 @id @default(uuid())
+  companyId             String
+  company               Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  voucherNumber         String
+  voucherType           String                 // "Receipt", "Payment", "Contra", "Journal", "Purchase", "Sales", "CreditNote", "DebitNote"
+  date                  DateTime
+  referenceNumber       String?
+  narration             String?
+  totalAmount           Decimal                @db.Decimal(15, 2)
+  createdAt             DateTime               @default(now())
+  entries               VoucherEntry[]
+  inventoryTransactions InventoryTransaction[]
+  invoices              Invoice[]
+
+  @@unique([companyId, voucherType, voucherNumber])
+}
+
+model VoucherEntry {
+  id        String   @id @default(uuid())
+  voucherId String
+  voucher   Voucher  @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  ledgerId  String
+  ledger    Ledger   @relation(fields: [ledgerId], references: [id])
+  entryType String   // "Debit", "Credit"
+  amount    Decimal  @db.Decimal(15, 2)
+  createdAt DateTime @default(now())
+}
+
+model InventoryTransaction {
+  id              String    @id @default(uuid())
+  voucherId       String
+  voucher         Voucher   @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  stockItemId     String
+  stockItem       StockItem @relation(fields: [stockItemId], references: [id])
+  transactionType String    // "In", "Out"
+  quantity        Decimal   @db.Decimal(15, 2)
+  price           Decimal   @db.Decimal(15, 2)
+  cgstAmount      Decimal   @db.Decimal(15, 2) @default(0)
+  sgstAmount      Decimal   @db.Decimal(15, 2) @default(0)
+  igstAmount      Decimal   @db.Decimal(15, 2) @default(0)
+  totalAmount     Decimal   @db.Decimal(15, 2)
+  createdAt       DateTime  @default(now())
+}
+
+model Invoice {
+  id              String        @id @default(uuid())
+  companyId       String
+  company         Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  voucherId       String?
+  voucher         Voucher?      @relation(fields: [voucherId], references: [id], onDelete: SetNull)
+  invoiceNumber   String
+  type            String        // "GST Invoice", "Proforma Invoice", "Quotation", "Estimate"
+  customerName    String
+  customerGstin   String?
+  billingAddress  String
+  shippingAddress String
+  status          String        // "Draft", "Sent", "Paid", "Cancelled"
+  subtotal        Decimal       @db.Decimal(15, 2)
+  cgstTotal       Decimal       @db.Decimal(15, 2) @default(0)
+  sgstTotal       Decimal       @db.Decimal(15, 2) @default(0)
+  igstTotal       Decimal       @db.Decimal(15, 2) @default(0)
+  grandTotal      Decimal       @db.Decimal(15, 2)
+  date            DateTime
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  items           InvoiceItem[]
+
+  @@unique([companyId, type, invoiceNumber])
+}
+
+model InvoiceItem {
+  id            String    @id @default(uuid())
+  invoiceId     String
+  invoice       Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  stockItemId   String?
+  stockItem     StockItem? @relation(fields: [stockItemId], references: [id], onDelete: SetNull)
+  description   String
+  quantity      Decimal   @db.Decimal(15, 2)
+  unitPrice     Decimal   @db.Decimal(15, 2)
+  discount      Decimal   @db.Decimal(15, 2) @default(0)
+  gstPercentage Decimal   @db.Decimal(5, 2) @default(0)
+  cgstAmount    Decimal   @db.Decimal(15, 2) @default(0)
+  sgstAmount    Decimal   @db.Decimal(15, 2) @default(0)
+  igstAmount    Decimal   @db.Decimal(15, 2) @default(0)
+  totalAmount   Decimal   @db.Decimal(15, 2)
+}
