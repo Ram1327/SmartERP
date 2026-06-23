@@ -7,19 +7,18 @@
 ---
 
 ## Last Completed Task
-* Completed Day 1 + Day 2 (combined) setup:
-  * Workspace architecture and documentation initialized
-  * Local Postgres database container started and verified
-  * Express.js backend project configured with TypeScript, Prisma, and health routes
-  * DB models migrated successfully (includes Customers, Suppliers, Invoices, Vouchers, and sequences)
-  * Database seeded with primary accounting groups and default ledgers
-  * Centralized voucher numbering service implemented
-  * Next.js typescript frontend project initialized
+* Completed Day 3 + Day 4 (Day 2 combined) deliverables:
+  * Removed AI instruction files (`frontend/AGENTS.md` and `frontend/CLAUDE.md`) from git tracking.
+  * Implemented JWT Token verification and active company context validation middlewares.
+  * Created Auth routes (`/api/auth/register`, `/api/auth/login`, `/api/auth/refresh`, `/api/auth/logout`) with Zod request validation and bcrypt password hashing.
+  * Created Company CRUD routes (`/api/companies`) with max 5 companies validation limit.
+  * Implemented automatic chart of accounts and default ledger seeding inside Company creation transaction.
+  * Verified all endpoints successfully using local tests.
 
 ---
 
 ## In Progress Tasks
-* Ready to start Day 2 (Authentication Module + Company Management)
+* Ready to start Day 3 (Dashboard UI)
 
 ---
 
@@ -29,5 +28,6 @@
 ---
 
 ## Next Action
-* Implement Authentication module (endpoints for register, login, and JWT access/refresh token rotation)
-* Implement Company management endpoints (CRUD companies, switch company context, and max 5 companies constraint logic)
+* Set up Dashboard shell using ShadCN and Tailwind.
+* Build the "Gateway of SmartERP" menu structure.
+* Design keyboard navigation for dashboard selectors.

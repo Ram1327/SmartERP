@@ -37,3 +37,9 @@ Thumbs.db
 *.db
 *.sqlite
 prisma/*.db
+
+# AI Agent instruction files
+frontend/AGENTS.md
+frontend/CLAUDE.md
+frontend/README.md
+

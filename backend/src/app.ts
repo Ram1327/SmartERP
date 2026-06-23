@@ -3,6 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
+import authRoutes from './routes/authRoutes.js';
+import companyRoutes from './routes/companyRoutes.js';
+
 const app = express();
 
 // Standard middlewares
@@ -13,6 +16,10 @@ app.use(cors({
 }));
 app.use(morgan('dev'));
 app.use(express.json());
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/companies', companyRoutes);
 
 // API health route
 app.get('/api/health', (req: Request, res: Response) => {

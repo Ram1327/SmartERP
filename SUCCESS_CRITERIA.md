@@ -9,3 +9,12 @@
 * [x] **Backend Up**: Express.js server running in TypeScript, accessible on port 5000, and returns `{"status": "ok"}` at `/api/health`.
 * [x] **Voucher Sequence Generator Working**: A backend module generates auto-incremented voucher numbers with customizable prefix/padding.
 * [x] **Frontend Initialized**: Next.js typescript skeleton generated.
+
+## Day 2 Auth & Company Management Metrics
+* [x] **Registration & Login**: User registration and login flow functional with hashed password checking.
+* [x] **JWT Verification**: Auth middleware verifies access tokens and blocks unauthorized requests.
+* [x] **Active Company context**: API endpoints verify company access and link operations via `x-company-id` header.
+* [x] **Company CRUD**: Full CRUD endpoints for company management functional.
+* [x] **Company Limit Enforcement**: Logic blocks company creation when count reaches 5.
+* [x] **Ledger Seeding**: Seeding chart of accounts and default ledgers is transactionally executed upon company creation.
+
