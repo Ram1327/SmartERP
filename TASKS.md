@@ -23,10 +23,9 @@
 - [x] Enforce max 5 companies per user rule
 
 ## Day 3: Dashboard UI
-
-- [ ] Set up main dashboard shell using shadcn
-- [ ] Design data-dense "Gateway of SmartERP" menu structure
-- [ ] Keyboard navigation for selection and screen transitions
+- [x] Set up main dashboard shell using ShadCN and Tailwind CSS
+- [x] Design data-dense "Gateway of SmartERP" menu structure
+- [x] Keyboard navigation for selection and screen transitions
 
 ## Day 4: Ledger Management
 

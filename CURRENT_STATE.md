@@ -7,18 +7,21 @@
 ---
 
 ## Last Completed Task
-* Completed Day 3 + Day 4 (Day 2 combined) deliverables:
-  * Removed AI instruction files (`frontend/AGENTS.md` and `frontend/CLAUDE.md`) from git tracking.
-  * Implemented JWT Token verification and active company context validation middlewares.
-  * Created Auth routes (`/api/auth/register`, `/api/auth/login`, `/api/auth/refresh`, `/api/auth/logout`) with Zod request validation and bcrypt password hashing.
-  * Created Company CRUD routes (`/api/companies`) with max 5 companies validation limit.
-  * Implemented automatic chart of accounts and default ledger seeding inside Company creation transaction.
-  * Verified all endpoints successfully using local tests.
+* Completed Day 5 (Day 3) deliverables:
+  * Configured Zustand global state store to manage active session token, logged-in user, and selected company.
+  * Formulated an Axios API client pre-configured with interceptors to inject authorization and active company headers.
+  * Styled the Next.js frontend with neutral slate/zinc dark modes and monospace data-dense typography.
+  * Implemented Secure login and registration card panels.
+  * Implemented Company Selector page supporting company list fetching, creation, alteration, and deleting.
+  * Formed a keyboard-centric double-pane Dashboard ("Gateway of SmartERP") with sidebar menu options and summary statistics.
+  * Incorporated global keyboard shortcuts provider (F1, ESC, CTRL+H, CTRL+Q, CTRL+K) and ArrowUp/ArrowDown/Enter list traversals.
+  * Built a searchable Command Palette triggered by CTRL+K.
+  * Validated Next.js builds successfully.
 
 ---
 
 ## In Progress Tasks
-* Ready to start Day 3 (Dashboard UI)
+* Ready to start Day 4 (Ledger Management)
 
 ---
 
@@ -28,6 +31,6 @@
 ---
 
 ## Next Action
-* Set up Dashboard shell using ShadCN and Tailwind.
-* Build the "Gateway of SmartERP" menu structure.
-* Design keyboard navigation for dashboard selectors.
+* Implement Ledger Management views (create, alter, list, search ledger profiles).
+* Integrate front-end ledger creation with corresponding API backend calls.
+* Auto-associate ledgers with Customers & Suppliers.
