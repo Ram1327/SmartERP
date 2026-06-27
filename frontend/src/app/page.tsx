@@ -5,6 +5,8 @@ import { useStore } from '@/store/useStore';
 import api from '@/config/api';
 import { KeyboardProvider } from '@/components/KeyboardProvider';
 import { CommandPalette } from '@/components/CommandPalette';
+import { LedgerForm } from '@/components/LedgerForm';
+import { LedgerList } from '@/components/LedgerList';
 
 // Core Gateway Menu items
 interface MenuItem {
@@ -69,6 +71,7 @@ export default function Home() {
   const [view, setView] = useState<'AUTH' | 'COMPANY_SELECT' | 'DASHBOARD'>('AUTH');
   const [authMode, setAuthMode] = useState<'LOGIN' | 'REGISTER'>('LOGIN');
   const [subScreen, setSubScreen] = useState<string>('MAIN');
+  const [activeLedgerId, setActiveLedgerId] = useState<string | null>(null);
 
   // Command palette state
   const [isCommandOpen, setIsCommandOpen] = useState(false);
@@ -609,13 +612,42 @@ export default function Home() {
                   </button>
                 </div>
 
-                {/* Sub-screen content displays mock/inline templates for now, replaced dynamically by each module */}
-                <div className="py-8 text-center text-zinc-500 border border-dashed border-zinc-850 rounded">
-                  <div className="text-xs text-zinc-300 font-bold mb-1">
-                    {subScreen.replace('VOUCHER_', 'Voucher ').replace('REPORT_', 'Report ')} Workspace
+                {/* Ledger Management Sub-screens */}
+                {subScreen === 'CREATE_LEDGER' && (
+                  <LedgerForm
+                    ledgerId={null}
+                    onSuccess={() => setSubScreen('MAIN')}
+                    onCancel={() => setSubScreen('MAIN')}
+                  />
+                )}
+
+                {subScreen === 'ALTER_LEDGER' && (
+                  activeLedgerId ? (
+                    <LedgerForm
+                      ledgerId={activeLedgerId}
+                      onSuccess={() => {
+                        setActiveLedgerId(null);
+                        setSubScreen('ALTER_LEDGER'); // Return to list
+                      }}
+                      onCancel={() => setActiveLedgerId(null)}
+                    />
+                  ) : (
+                    <LedgerList
+                      onEdit={(id) => setActiveLedgerId(id)}
+                      onBack={() => setSubScreen('MAIN')}
+                    />
+                  )
+                )}
+
+                {/* Other Sub-screens placeholder */}
+                {subScreen !== 'CREATE_LEDGER' && subScreen !== 'ALTER_LEDGER' && (
+                  <div className="py-8 text-center text-zinc-500 border border-dashed border-zinc-850 rounded">
+                    <div className="text-xs text-zinc-300 font-bold mb-1">
+                      {subScreen.replace('VOUCHER_', 'Voucher ').replace('REPORT_', 'Report ')} Workspace
+                    </div>
+                    <div>This component screen will be fully completed in the next modules.</div>
                   </div>
-                  <div>This component screen will be fully completed in the next modules.</div>
-                </div>
+                )}
               </div>
 
               <div className="border-t border-zinc-850 pt-4 text-[9px] text-zinc-500 flex justify-between">

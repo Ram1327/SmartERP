@@ -18,3 +18,9 @@
 * [x] **Company Limit Enforcement**: Logic blocks company creation when count reaches 5.
 * [x] **Ledger Seeding**: Seeding chart of accounts and default ledgers is transactionally executed upon company creation.
 
+## Day 4 Ledger Management Metrics
+* [x] **Ledger Creation & Selection**: Create ledgers under specified accounting groups (e.g. Indirect Expenses) with default values.
+* [x] **Customer/Supplier Binding**: Transactionally create corresponding metadata in Customer/Supplier tables when creating Customer/Supplier type ledgers.
+* [x] **Ledger Listing & Keyboard Navigation**: Fetch all company ledgers, support arrow-key list scrolling and quick name filtering.
+* [x] **Alteration Sync**: Update ledger and customer/supplier details in a unified transaction, verifying name changes propagate properly.
+

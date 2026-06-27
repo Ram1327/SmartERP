@@ -29,8 +29,8 @@
 
 ## Day 4: Ledger Management
 
-- [ ] Ledger creation, alteration, search, and list screens
-- [ ] Automatically link/unbind ledger profiles for Customer & Supplier accounts
+- [x] Ledger creation, alteration, search, and list screens
+- [x] Automatically link/unbind ledger profiles for Customer & Supplier accounts
 
 ## Day 5: Group Management
 
