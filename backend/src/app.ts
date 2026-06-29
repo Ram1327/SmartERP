@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import authRoutes from './routes/authRoutes.js';
 import companyRoutes from './routes/companyRoutes.js';
 import ledgerRoutes from './routes/ledgerRoutes.js';
+import groupRoutes from './routes/groupRoutes.js';
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/ledgers', ledgerRoutes);
+app.use('/api/groups', groupRoutes);
 
 // API health route
 app.get('/api/health', (req: Request, res: Response) => {

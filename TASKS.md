@@ -34,8 +34,8 @@
 
 ## Day 5: Group Management
 
-- [ ] Account Group creation and hierarchy nesting
-- [ ] Trial balance grouping layout
+- [x] Account Group creation and hierarchy nesting
+- [x] Trial balance grouping layout
 
 ## Day 6: Stock Management
 

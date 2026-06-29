@@ -7,6 +7,8 @@ import { KeyboardProvider } from '@/components/KeyboardProvider';
 import { CommandPalette } from '@/components/CommandPalette';
 import { LedgerForm } from '@/components/LedgerForm';
 import { LedgerList } from '@/components/LedgerList';
+import { GroupForm } from '@/components/GroupForm';
+import { GroupTreeList } from '@/components/GroupTreeList';
 
 // Core Gateway Menu items
 interface MenuItem {
@@ -72,6 +74,9 @@ export default function Home() {
   const [authMode, setAuthMode] = useState<'LOGIN' | 'REGISTER'>('LOGIN');
   const [subScreen, setSubScreen] = useState<string>('MAIN');
   const [activeLedgerId, setActiveLedgerId] = useState<string | null>(null);
+  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
+  const [isCreatingGroup, setIsCreatingGroup] = useState<boolean>(false);
+  const [mounted, setMounted] = useState(false);
 
   // Command palette state
   const [isCommandOpen, setIsCommandOpen] = useState(false);
@@ -97,8 +102,14 @@ export default function Home() {
   // Dashboard state & Traversal
   const [flatMenuIndex, setFlatMenuIndex] = useState(0);
 
+  // Set mounted flag on client
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Sync view based on store state
   useEffect(() => {
+    if (!mounted) return;
     if (!token) {
       setView('AUTH');
       setSubScreen('MAIN');
@@ -109,7 +120,7 @@ export default function Home() {
     } else {
       setView('DASHBOARD');
     }
-  }, [token, activeCompany]);
+  }, [token, activeCompany, mounted]);
 
   // Fetch all companies from server
   const fetchCompanies = async () => {
@@ -247,6 +258,14 @@ export default function Home() {
     window.addEventListener('keydown', handleMenuNavigation);
     return () => window.removeEventListener('keydown', handleMenuNavigation);
   }, [view, subScreen, flatMenuIndex]);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-zinc-950 text-zinc-500 font-mono flex items-center justify-center text-[10px] uppercase tracking-widest">
+        Loading SmartERP System...
+      </div>
+    );
+  }
 
   return (
     <KeyboardProvider onShortcutTriggered={handleShortcut}>
@@ -639,8 +658,30 @@ export default function Home() {
                   )
                 )}
 
+                {subScreen === 'CREATE_GROUP' && (
+                  isCreatingGroup || activeGroupId ? (
+                    <GroupForm
+                      groupId={activeGroupId}
+                      onSuccess={() => {
+                        setActiveGroupId(null);
+                        setIsCreatingGroup(false);
+                      }}
+                      onCancel={() => {
+                        setActiveGroupId(null);
+                        setIsCreatingGroup(false);
+                      }}
+                    />
+                  ) : (
+                    <GroupTreeList
+                      onCreate={() => setIsCreatingGroup(true)}
+                      onEdit={(id) => setActiveGroupId(id)}
+                      onBack={() => setSubScreen('MAIN')}
+                    />
+                  )
+                )}
+
                 {/* Other Sub-screens placeholder */}
-                {subScreen !== 'CREATE_LEDGER' && subScreen !== 'ALTER_LEDGER' && (
+                {subScreen !== 'CREATE_LEDGER' && subScreen !== 'ALTER_LEDGER' && subScreen !== 'CREATE_GROUP' && (
                   <div className="py-8 text-center text-zinc-500 border border-dashed border-zinc-850 rounded">
                     <div className="text-xs text-zinc-300 font-bold mb-1">
                       {subScreen.replace('VOUCHER_', 'Voucher ').replace('REPORT_', 'Report ')} Workspace
