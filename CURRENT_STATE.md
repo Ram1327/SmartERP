@@ -1,23 +1,24 @@
 # CURRENT_STATE.md - SmartERP
 
 ## Current Milestone
-* **Milestone**: Day 5 Group Management Complete
+* **Milestone**: Day 6 Stock Management Complete
 * **Current Branch**: `main`
 
 ---
 
 ## Last Completed Task
-* Completed Day 5 deliverables:
-  * Built protected REST endpoints for Chart of Accounts Group CRUD with cycle dependency checks.
-  * Implemented primary group propagation and delete protection for system default groups.
-  * Created `GroupForm` with parent group selectors and conditional primary type inputs.
-  * Built keyboard-navigable `GroupTreeList` rendering hierarchical tree layouts with arrow-key traversals and expand/collapse actions.
-  * Integrated group management directly into Next.js dashboard and resolved SSR hydration mismatches.
+* Completed Day 6 deliverables:
+  * Designed and built backend routes and controller for Stock Groups, Units, and Stock Items CRUD.
+  * Implemented database reference integrity blocks (e.g. blocking unit deletion if linked to items).
+  * Created UnitForm and UnitList components supporting search filters and keyboard shortcuts.
+  * Developed StockItemForm supporting item variables and inline Quick-Add Stock Groups.
+  * Developed StockItemList showing registry details and supporting arrow-key traversals.
+  * Integrated Alt+S and Alt+U gateway shortcut actions on frontend dashboard.
 
 ---
 
 ## In Progress Tasks
-* Ready to start Day 6 (Stock Management)
+* Ready to start Day 7 (Purchase Voucher)
 
 ---
 
@@ -27,5 +28,5 @@
 ---
 
 ## Next Action
-* Implement Stock Groups, Stock Items, and Units of Measure management forms.
-* Support stock balance queries.
+* Purchase voucher form entry with inventory auto-increase.
+* Double-entry bookkeeping posting under the hood.

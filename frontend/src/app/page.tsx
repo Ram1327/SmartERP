@@ -9,6 +9,10 @@ import { LedgerForm } from '@/components/LedgerForm';
 import { LedgerList } from '@/components/LedgerList';
 import { GroupForm } from '@/components/GroupForm';
 import { GroupTreeList } from '@/components/GroupTreeList';
+import { UnitForm } from '@/components/UnitForm';
+import { UnitList } from '@/components/UnitList';
+import { StockItemForm } from '@/components/StockItemForm';
+import { StockItemList } from '@/components/StockItemList';
 
 // Core Gateway Menu items
 interface MenuItem {
@@ -76,6 +80,10 @@ export default function Home() {
   const [activeLedgerId, setActiveLedgerId] = useState<string | null>(null);
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
   const [isCreatingGroup, setIsCreatingGroup] = useState<boolean>(false);
+  const [activeUnitId, setActiveUnitId] = useState<string | null>(null);
+  const [isCreatingUnit, setIsCreatingUnit] = useState<boolean>(false);
+  const [activeItemId, setActiveItemId] = useState<string | null>(null);
+  const [isCreatingItem, setIsCreatingItem] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
 
   // Command palette state
@@ -680,8 +688,52 @@ export default function Home() {
                   )
                 )}
 
+                {subScreen === 'CREATE_UNIT' && (
+                  isCreatingUnit || activeUnitId ? (
+                    <UnitForm
+                      unitId={activeUnitId}
+                      onSuccess={() => {
+                        setActiveUnitId(null);
+                        setIsCreatingUnit(false);
+                      }}
+                      onCancel={() => {
+                        setActiveUnitId(null);
+                        setIsCreatingUnit(false);
+                      }}
+                    />
+                  ) : (
+                    <UnitList
+                      onCreate={() => setIsCreatingUnit(true)}
+                      onEdit={(id) => setActiveUnitId(id)}
+                      onBack={() => setSubScreen('MAIN')}
+                    />
+                  )
+                )}
+
+                {subScreen === 'CREATE_STOCK_ITEM' && (
+                  isCreatingItem || activeItemId ? (
+                    <StockItemForm
+                      itemId={activeItemId}
+                      onSuccess={() => {
+                        setActiveItemId(null);
+                        setIsCreatingItem(false);
+                      }}
+                      onCancel={() => {
+                        setActiveItemId(null);
+                        setIsCreatingItem(false);
+                      }}
+                    />
+                  ) : (
+                    <StockItemList
+                      onCreate={() => setIsCreatingItem(true)}
+                      onEdit={(id) => setActiveItemId(id)}
+                      onBack={() => setSubScreen('MAIN')}
+                    />
+                  )
+                )}
+
                 {/* Other Sub-screens placeholder */}
-                {subScreen !== 'CREATE_LEDGER' && subScreen !== 'ALTER_LEDGER' && subScreen !== 'CREATE_GROUP' && (
+                {subScreen !== 'CREATE_LEDGER' && subScreen !== 'ALTER_LEDGER' && subScreen !== 'CREATE_GROUP' && subScreen !== 'CREATE_UNIT' && subScreen !== 'CREATE_STOCK_ITEM' && (
                   <div className="py-8 text-center text-zinc-500 border border-dashed border-zinc-850 rounded">
                     <div className="text-xs text-zinc-300 font-bold mb-1">
                       {subScreen.replace('VOUCHER_', 'Voucher ').replace('REPORT_', 'Report ')} Workspace

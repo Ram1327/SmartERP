@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import companyRoutes from './routes/companyRoutes.js';
 import ledgerRoutes from './routes/ledgerRoutes.js';
 import groupRoutes from './routes/groupRoutes.js';
+import inventoryRoutes from './routes/inventoryRoutes.js';
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/ledgers', ledgerRoutes);
 app.use('/api/groups', groupRoutes);
+app.use('/api/inventory', inventoryRoutes);
 
 // API health route
 app.get('/api/health', (req: Request, res: Response) => {

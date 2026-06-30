@@ -39,8 +39,8 @@
 
 ## Day 6: Stock Management
 
-- [ ] Stock Groups, Stock Items, and Units of Measure management forms
-- [ ] Basic stock balance queries
+- [x] Stock Groups, Stock Items, and Units of Measure management forms
+- [x] Basic stock balance queries
 
 ## Day 7: Purchase Voucher
 
