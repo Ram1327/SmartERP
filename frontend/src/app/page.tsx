@@ -13,6 +13,8 @@ import { UnitForm } from '@/components/UnitForm';
 import { UnitList } from '@/components/UnitList';
 import { StockItemForm } from '@/components/StockItemForm';
 import { StockItemList } from '@/components/StockItemList';
+import { PurchaseVoucherForm } from '@/components/PurchaseVoucherForm';
+import { PurchaseVoucherList } from '@/components/PurchaseVoucherList';
 
 // Core Gateway Menu items
 interface MenuItem {
@@ -84,6 +86,7 @@ export default function Home() {
   const [isCreatingUnit, setIsCreatingUnit] = useState<boolean>(false);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
   const [isCreatingItem, setIsCreatingItem] = useState<boolean>(false);
+  const [isRecordingPurchase, setIsRecordingPurchase] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
 
   // Command palette state
@@ -236,7 +239,11 @@ export default function Home() {
     } else if (action === 'COMMAND_SEARCH') {
       setIsCommandOpen(true);
     } else if (action === 'ESC') {
-      setSubScreen('MAIN');
+      if (subScreen === 'VOUCHER_PURCHASE' && isRecordingPurchase) {
+        setIsRecordingPurchase(false);
+      } else {
+        setSubScreen('MAIN');
+      }
     } else {
       // Set the subscreen based on navigation
       setSubScreen(action);
@@ -266,6 +273,21 @@ export default function Home() {
     window.addEventListener('keydown', handleMenuNavigation);
     return () => window.removeEventListener('keydown', handleMenuNavigation);
   }, [view, subScreen, flatMenuIndex]);
+
+  // F2 key listener when inside Purchase Voucher list to trigger new entry form
+  useEffect(() => {
+    if (view !== 'DASHBOARD' || subScreen !== 'VOUCHER_PURCHASE' || isRecordingPurchase) return;
+
+    const handlePurchaseListKeys = (e: KeyboardEvent) => {
+      if (e.key === 'F2') {
+        e.preventDefault();
+        setIsRecordingPurchase(true);
+      }
+    };
+
+    window.addEventListener('keydown', handlePurchaseListKeys);
+    return () => window.removeEventListener('keydown', handlePurchaseListKeys);
+  }, [view, subScreen, isRecordingPurchase]);
 
   if (!mounted) {
     return (
@@ -732,8 +754,25 @@ export default function Home() {
                   )
                 )}
 
+                {subScreen === 'VOUCHER_PURCHASE' && (
+                  isRecordingPurchase ? (
+                    <PurchaseVoucherForm
+                      onSuccess={() => {
+                        setIsRecordingPurchase(false);
+                      }}
+                      onCancel={() => {
+                        setIsRecordingPurchase(false);
+                      }}
+                    />
+                  ) : (
+                    <PurchaseVoucherList
+                      onCreateClick={() => setIsRecordingPurchase(true)}
+                    />
+                  )
+                )}
+
                 {/* Other Sub-screens placeholder */}
-                {subScreen !== 'CREATE_LEDGER' && subScreen !== 'ALTER_LEDGER' && subScreen !== 'CREATE_GROUP' && subScreen !== 'CREATE_UNIT' && subScreen !== 'CREATE_STOCK_ITEM' && (
+                {subScreen !== 'CREATE_LEDGER' && subScreen !== 'ALTER_LEDGER' && subScreen !== 'CREATE_GROUP' && subScreen !== 'CREATE_UNIT' && subScreen !== 'CREATE_STOCK_ITEM' && subScreen !== 'VOUCHER_PURCHASE' && (
                   <div className="py-8 text-center text-zinc-500 border border-dashed border-zinc-850 rounded">
                     <div className="text-xs text-zinc-300 font-bold mb-1">
                       {subScreen.replace('VOUCHER_', 'Voucher ').replace('REPORT_', 'Report ')} Workspace
